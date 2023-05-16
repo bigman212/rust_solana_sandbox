@@ -1,0 +1,15 @@
+[package]
+name = "solana_sandbox"
+version = "0.1.0"
+edition = "2021"
+authors = ["bigman212 <bigman212@yandex.ru>"]
+rust-version = "1.68"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+solana-program = "1.15.2"
+solana-sdk = "1.10.0"
+solana-client = "1.10.0"
+rand = "0.8.5"
+shellexpand = "3.1.0"
