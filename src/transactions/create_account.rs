@@ -25,7 +25,7 @@ pub fn call_create_new_account(
     let new_key_pair = Keypair::new();
     println!("new public key generated {}", &new_key_pair.pubkey());
 
-    utils::save_new_keypair_to_file(&new_key_pair);
+    utils::save_new_keypair_to_file(&new_key_pair, None);
 
     let rent = rpc_client.get_minimum_balance_for_rent_exemption(0)
         .unwrap();
