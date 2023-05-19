@@ -26,7 +26,7 @@ pub fn call_hello_name_transaction(
     let blockhash = rpc_client.get_latest_blockhash().unwrap();
 
     let instruction = Instruction {
-        program_id: hello_name_program::program_id(),
+        program_id: hello_name_program::PROGRAM_ID,
         data: data.try_to_vec().unwrap(),
         accounts: vec![
             AccountMeta {

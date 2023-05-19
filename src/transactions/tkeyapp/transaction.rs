@@ -22,9 +22,12 @@ pub mod tkeyapp {
     use crate::transactions::tkeyapp::error::TokenAccountErrorType;
 
     pub mod tkeyapp_token_metadata {
+        use solana_sdk::pubkey;
+        use solana_sdk::pubkey::Pubkey;
+
         pub const NAME: &str = "TKeyApp";
         pub const SYMBOL: &str = "tkeyapp";
-        pub const MINT: &str = "4uZjiUSrRwygmoLBR6hN8wcmYq59Wsw5ugcHKKxbd1Lz";
+        pub const MINT: Pubkey = pubkey!("4uZjiUSrRwygmoLBR6hN8wcmYq59Wsw5ugcHKKxbd1Lz");
     }
 
     pub fn create_new_token_mint_account(
@@ -100,7 +103,7 @@ pub mod tkeyapp {
             &new_token_account_owner.pubkey(),
             &mint_account_key_pair.pubkey(),
         );
-        println!("ATA address: {}", ata_address);
+        println!("ATA address: {ata_address}");
 
         let init_ata_instruction =
             spl_associated_token_account::instruction::create_associated_token_account(

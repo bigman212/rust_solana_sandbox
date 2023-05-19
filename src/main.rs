@@ -13,8 +13,8 @@ mod transactions;
 
 fn main() {
     let root_wallet_path = &env::args()
-        .by_ref()
-        .collect::<Vec<String>>()[1];
+        .nth(1)
+        .expect("Expected passing root wallect path json in program args");
     let rpc_client = RpcClient::new("http://localhost:8899");
     let root_account = read_keypair_file(Path::new(root_wallet_path))
         .unwrap();

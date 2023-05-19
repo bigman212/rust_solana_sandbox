@@ -1,5 +1,5 @@
 use std::fs::DirBuilder;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use solana_client::client_error::{ClientError, ClientErrorKind};
 use solana_client::rpc_request::RpcError::RpcResponseError;
@@ -10,20 +10,19 @@ use solana_sdk::signature::{Keypair, read_keypair_file, Signer, write_keypair_fi
 
 use crate::RootAccount;
 
-pub fn get_wallets_dir() -> String {
-    String::from("wallets/")
+pub fn get_wallets_dir() -> PathBuf {
+    PathBuf::from("wallets/")
 }
 
 pub fn save_new_keypair_to_file(keypair: &Keypair, file_name: Option<String>) {
-    let file_name = file_name.map_or(
-        format!("{}.json", keypair.pubkey()),
+    let file_name = file_name.map_or_else(
+        || format!("{}.json", keypair.pubkey()),
         |it| format!("{}_{}", it, keypair.pubkey()),
     );
 
     check_wallets_dir();
 
-    let dir = get_wallets_dir();
-    let wallet_path = Path::new(&dir).join(file_name);
+    let wallet_path = get_wallets_dir().join(file_name);
 
     write_keypair_file(&keypair, wallet_path)
         .expect("Failed to write_keypair_file");
@@ -59,22 +58,17 @@ fn from_lamports(lamports: u64, decimals: u32) -> f64 {
 }
 
 pub fn extract_error_logs(error: ClientError) -> String {
-    let error: ClientErrorKind = ClientError::from(error).kind;
-    let empty_string = String::new();
-
-    if let ClientErrorKind::RpcError(it) = error {
-        if let RpcResponseError { code: _code, message: _message, data } = it {
-            if let RpcResponseErrorData::SendTransactionPreflightFailure(result) = data {
-                result.logs.unwrap()
-                    .clone()
-                    .join("\n")
-            } else {
-                empty_string
+    match error.kind {
+        ClientErrorKind::RpcError(
+            RpcResponseError {
+                data: RpcResponseErrorData::SendTransactionPreflightFailure(result),
+                ..
             }
-        } else {
-            empty_string
+        ) => {
+            result.logs.unwrap()
+                .clone()
+                .join("\n")
         }
-    } else {
-        empty_string
+        _ => String::new()
     }
 }

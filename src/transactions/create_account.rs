@@ -49,7 +49,7 @@ pub fn call_create_new_account(
     let _sig = rpc_client.send_and_confirm_transaction(&tx)
         .unwrap();
 
-    println!("Account creation success: {}", _sig);
+    println!("Account creation success: {_sig}");
 
     rpc_client.get_account(&new_key_pair.pubkey())
 }
