@@ -1,10 +1,12 @@
 use std::fs::DirBuilder;
 use std::path::{Path, PathBuf};
 
+use rust_decimal::{Decimal, MathematicalOps};
+use rust_decimal_macros::dec;
 use solana_client::client_error::{ClientError, ClientErrorKind};
+use solana_client::rpc_client::RpcClient;
 use solana_client::rpc_request::RpcError::RpcResponseError;
 use solana_client::rpc_request::RpcResponseErrorData;
-use solana_rpc_client::rpc_client::RpcClient;
 use solana_sdk::native_token::lamports_to_sol;
 use solana_sdk::signature::{Keypair, read_keypair_file, Signer, write_keypair_file};
 
@@ -44,31 +46,32 @@ fn load_wallet_from_local(rpc_client: &RpcClient, path: &str) -> RootAccount {
         .expect("Example requires a keypair file");
     let pub_key = wallet.pubkey();
 
-    let account = rpc_client.get_account(&pub_key).unwrap();
+    let account = rpc_client.get_account(&pub_key)
+        .unwrap();
     println!("{}", from_lamports(account.lamports, 9));
     println!("{}", lamports_to_sol(account.lamports));
     println!("{}", account.owner);
-    println!("{}", &pub_key);
+    println!("{}", pub_key);
 
     RootAccount { keypair: wallet, account }
 }
 
-fn from_lamports(lamports: u64, decimals: u32) -> f64 {
-    lamports as f64 / (10_u64.pow(decimals)) as f64
+fn from_lamports(lamports: u64, decimals: u32) -> Decimal {
+    Decimal::from(lamports) / (dec!(10).powd(decimals.into()))
 }
 
-pub fn extract_error_logs(error: ClientError) -> String {
-    match error.kind {
-        ClientErrorKind::RpcError(
-            RpcResponseError {
-                data: RpcResponseErrorData::SendTransactionPreflightFailure(result),
-                ..
-            }
-        ) => {
-            result.logs.unwrap()
-                .clone()
-                .join("\n")
+pub fn extract_error_logs(error: ClientError) -> Option<String> {
+    let ClientErrorKind::RpcError(
+        RpcResponseError {
+            data: RpcResponseErrorData::SendTransactionPreflightFailure(result),
+            ..
         }
-        _ => String::new()
-    }
+    ) = error.kind else { return None };
+
+    Some(
+        result.logs.unwrap()
+        .clone()
+        .join("\n")
+    )
+
 }

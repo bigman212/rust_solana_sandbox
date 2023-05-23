@@ -1,24 +1,17 @@
-#[derive(Debug)]
+use thiserror::Error;
+
+#[derive(Error, Debug)]
 pub enum TokenAccountErrorType {
-    MintAccountKeypairReadFailure(Box<dyn std::error::Error>),
-    RpcClientError(solana_client::client_error::ClientError),
-    InitInstructionError(solana_sdk::program_error::ProgramError),
-}
-
-impl From<Box<dyn std::error::Error>> for TokenAccountErrorType {
-    fn from(value: Box<dyn std::error::Error>) -> Self {
-        TokenAccountErrorType::MintAccountKeypairReadFailure(value)
-    }
-}
-
-impl From<solana_client::client_error::ClientError> for TokenAccountErrorType {
-    fn from(value: solana_client::client_error::ClientError) -> Self {
-        TokenAccountErrorType::RpcClientError(value)
-    }
-}
-
-impl From<solana_sdk::program_error::ProgramError> for TokenAccountErrorType {
-    fn from(value: solana_sdk::program_error::ProgramError) -> Self {
-        TokenAccountErrorType::InitInstructionError(value)
-    }
+    #[error("keypair failed to read from IO")]
+    MintAccountKeypairReadFailure(
+        #[from] Box<dyn std::error::Error>
+    ),
+    #[error("rpc client returned error `{0}`")]
+    RpcClientError(
+        #[from] solana_client::client_error::ClientError
+    ),
+    #[error("init instruction failed: {:?}", 0)]
+    InitInstructionError(
+        #[from] solana_sdk::program_error::ProgramError
+    ),
 }

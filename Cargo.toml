@@ -7,13 +7,20 @@ authors = ["bigman212 <bigman212@yandex.ru>"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# std
 borsh = "^0.10.3"
-solana-client = "^1.15.2"
-solana-rpc-client = "1.15.2"
-solana-sdk = "^1.15.2"
+thiserror = "^1.0"
+rust_decimal =  { version = "^1.29.1", features = ["maths"] }
+rust_decimal_macros = "^1.29.1"
+
+# solana native
+solana-client = "1.14.18"
+solana-sdk = "1.14.18"
 spl-token = "^3.5.0"
-spl-associated-token-account = "1.1.2"
-mpl-token-metadata = "1.11.1"
+spl-associated-token-account = "^1.1.2"
+mpl-token-metadata = "^1.11.1"
+
+# own libs
 custom_solana_programs = { path = "custom_solana_programs" }
 
 [[bin]]

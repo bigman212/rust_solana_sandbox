@@ -30,10 +30,14 @@ struct RootAccount {
 fn run_hello_name_instruction(rpc_client: &RpcClient, root_account: &Keypair) {
     let instruction_data = hello_name_program::NamesData {
         group_leader: String::from("KeyApp"),
-        group_members: vec!["Chingiz", "Nick", "Tengiz", "Kostya", "Davran", "Eduard"]
-            .iter()
-            .map(|&x| String::from(x))
-            .collect(),
+        group_members: vec![
+            "Chingiz".to_string(),
+            "Nick".to_string(),
+            "Tengiz".to_string(),
+            "Kostya".to_string(),
+            "Davran".to_string(),
+            "Eduard".to_string()
+        ]
     };
     call_hello_name_transaction(&instruction_data, root_account, rpc_client);
 }
