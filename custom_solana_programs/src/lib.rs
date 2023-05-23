@@ -10,11 +10,7 @@ pub mod hello_name_program {
     };
     use solana_program::pubkey::Pubkey;
 
-    pub const PROGRAM_ID: &str = "2BYjDV3FzQxLLAzyAtYq8Lzucet44bsSn8Gv2tvsz5BY";
-
-    pub fn program_id() -> Pubkey {
-        return Pubkey::from_str(PROGRAM_ID).unwrap()
-    }
+    pub static PROGRAM_ID: Pubkey = solana_program::pubkey!("2BYjDV3FzQxLLAzyAtYq8Lzucet44bsSn8Gv2tvsz5BY");
 
     #[derive(BorshSerialize, BorshDeserialize, PartialEq, Debug)]
     pub struct NamesData {
